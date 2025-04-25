@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MBTA Station Info</title>
+
+    <!-- Mapbox -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css" rel="stylesheet" />
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #map {
+            height: 300px;
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Results for "{{ place }}"</h1>
+
+    <p><strong>Nearest MBTA Stop:</strong> {{ stop }}</p>
+    <p><strong>Wheelchair Accessible:</strong> {{ accessible }}</p>
+
+    {% if temp %}
+        <p><strong>Current Weather:</strong> {{ temp }}°F, {{ desc }}</p>
+    {% else %}
+        <p><strong>Weather:</strong> Not available</p>
+    {% endif %}
+
+    {% if lat and lon and mapbox_token %}
+    <div id="map"></div>
+    <script>
+        mapboxgl.accessToken = '{{ mapbox_token }}';
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v12',
+            center: [{ lon }, { lat }],
+            zoom: 13
+        });
+
+        new mapboxgl.Marker().setLngLat([{ lon }, { lat }]).addTo(map);
+    </script>
+    {% endif %}
+
+    <br>
+    <a href="/">🔙 Try another search</a>
+</body>
+</html>
